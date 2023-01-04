@@ -1,5 +1,6 @@
 library(shiny)
 library(mailR)
+library(dplyr)
 library(RMariaDB)
 
 source("setup.R")
