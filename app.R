@@ -7,6 +7,7 @@ library(RMariaDB)
 source("setup.R")
 
 ui <- fluidPage(
+
   tags$head(
     # Include the Nord Light CSS styles
     tags$style(HTML("
@@ -60,11 +61,13 @@ ui <- fluidPage(
         background-color: var(--nord0
       "))
   ),
-  textInput("name", "Name"),
-  textInput("email", "Email"),
-  textAreaInput("message", "Message", rows = 5),
-  actionButton("submit", "Submit")
-)
+  div(style = "display: flex; justify-content: center; align-items: center; height: 100vh;",
+      column(width = 6,
+             textInput("name", "Name"),
+             textInput("email", "Email"),
+             textAreaInput("message", "Message", rows = 5),
+             actionButton("submit", "Submit")
+)))
 
 
 server <- function(input, output, session) {
