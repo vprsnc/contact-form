@@ -1,5 +1,6 @@
 library(shiny)
 library(mailR)
+library(RMariaDB)
 
 source("setup.R")
 
@@ -23,6 +24,26 @@ server <- function(input, output) {
           smtp = my.controls,
           authenticate = TRUE,
           send = TRUE)
+
+
+  my_db <- dbConnect(MariaDB(),
+                     dbname = dbname,
+                     host = dbhostname,
+                     port = dbport,
+                     user = dbuser,
+                     password = dbpass)
+
+  newSubmission <- list(
+    from = input$email,
+    date = paste(Sys.Date()),
+    time = paste(Sys.time()),
+    name = input$name,
+    subject = input$subject,
+    message = input$message
+  )%>% data.frame()
+
+  dbAppendTable(my_db, "submissions", newSubmission)
+
   }) # observeEvent
 }
 
