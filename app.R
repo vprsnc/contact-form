@@ -1,5 +1,7 @@
 library(shiny)
 library(mailR)
+library(DBI)
+library(dplyr)
 library(RMariaDB)
 
 source("setup.R")
@@ -11,7 +13,7 @@ ui <- fluidPage(
   actionButton("submit", "Submit")
 )
 
-server <- function(input, output) {
+server <- function(input, output, session) {
 
   # Send email when submit button is clicked
   observeEvent(input$submit, {
@@ -42,7 +44,11 @@ server <- function(input, output) {
     message = input$message
   )
 
-  dbAppendTable(my_db, "submissions", newSubmission)
+  apnd <- sqlAppendTable(my_db, "submissions", newSubmission)
+
+  dbExecute(my_db, apnd)
+
+  session$reload
 
   }) # observeEvent
 }
