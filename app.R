@@ -34,7 +34,7 @@ server <- function(input, output) {
                      password = dbpass)
 
   newSubmission <- list(
-    from = input$email,
+    mail = input$email,
     date = paste(Sys.Date()),
     time = paste(Sys.time()),
     name = input$name,
