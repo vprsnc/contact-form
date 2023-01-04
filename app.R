@@ -1,34 +1,29 @@
 library(shiny)
+library(mailR)
 
-shinyUI(fluidPage(
+source("setup.R")
 
-  # Form for user input
-  fluidRow(
-    column(6,
-           textInput("name", "Name", ""),
-           textInput("email", "Email", ""),
-           textAreaInput("message", "Message", "")
-    ),
-    column(6,
-           actionButton("send", "Send")
-    )
-  ),
-  verbatimTextOutput("output")
-))
+ui <- fluidPage(
+  textInput("name", "Name", ""),
+  textInput("email", "Email", ""),
+  textAreaInput("message", "Message", ""),
+  actionButton("submit", "Submit")
+)
 
-# In the server.R file
+server <- function(input, output) {
 
-library(shiny)
+  # Send email when submit button is clicked
+  observeEvent(input$submit, {
+    send.mail(from = input$email,
+          to = "georgy@analytics-abc.xyz",
+          subject = paste("Form submission from ", input$name),
+          body = paste0("Name: ", input$name, "\n",
+                        "Email: ", input$email, "\n",
+                        "Message: ", input$message),
+          smtp = my.controls,
+          authenticate = TRUE,
+          send = TRUE)
+  }) # observeEvent
+}
 
-shinyServer(function(input, output) {
-
-  # Send email when the send button is clicked
-  observeEvent(input$send, {
-    sendEmail(from = input$email,
-              to = "you@example.com",
-              subject = paste("Contact form submission from", input$name),
-              body = input$message)
-    output$output <- renderText("Thank you for your message!")
-  })
-
-})
+shinyApp(ui = ui, server = server)
