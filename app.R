@@ -1,6 +1,5 @@
 library(shiny)
 library(mailR)
-library(dplyr)
 library(RMariaDB)
 
 source("setup.R")
@@ -34,14 +33,14 @@ server <- function(input, output) {
                      user = dbuser,
                      password = dbpass)
 
-  newSubmission <- list(
+  newSubmission <- data.frame(
     mail = input$email,
     date = paste(Sys.Date()),
     time = paste(Sys.time()),
     name = input$name,
     subject = input$subject,
     message = input$message
-  )%>% data.frame()
+  )
 
   dbAppendTable(my_db, "submissions", newSubmission)
 
