@@ -84,27 +84,27 @@ server <- function(input, output, session) {
           authenticate = TRUE,
           send = TRUE)
 
+    showModal(modalDialog(title = "Message Sent", "Your message was sent successfully."))
+    my_db <- dbConnect(MariaDB(),
+                       dbname = dbname,
+                       host = dbhostname,
+                       port = dbport,
+                       user = dbuser,
+                       password = dbpass)
 
-  my_db <- dbConnect(MariaDB(),
-                     dbname = dbname,
-                     host = dbhostname,
-                     port = dbport,
-                     user = dbuser,
-                     password = dbpass)
+    newSubmission <- data.frame(
+      mail = input$email,
+      date = paste(Sys.Date()),
+      time = paste(Sys.time()),
+      name = input$name,
+      message = input$message
+    )
 
-  newSubmission <- data.frame(
-    mail = input$email,
-    date = paste(Sys.Date()),
-    time = paste(Sys.time()),
-    name = input$name,
-    message = input$message
-  )
+    apnd <- sqlAppendTable(my_db, "submissions", newSubmission)
 
-  apnd <- sqlAppendTable(my_db, "submissions", newSubmission)
+    dbExecute(my_db, apnd)
 
-  dbExecute(my_db, apnd)
-
-  session$reload
+    session$reload
 
   }) # observeEvent
 }
