@@ -40,7 +40,6 @@ server <- function(input, output, session) {
     date = paste(Sys.Date()),
     time = paste(Sys.time()),
     name = input$name,
-    subject = input$subject,
     message = input$message
   )
 
